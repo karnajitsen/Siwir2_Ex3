@@ -106,7 +106,7 @@ inline void collide()
 		{
 			for (int k = 0; k < Q; k++)
 			{
-				(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
+			(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
 			}
 		}
 
@@ -161,8 +161,11 @@ int main(int argc, char** argv)
 			string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(k)) + std::string(".vtk");
 			writeVTK(vtkfile,(*fluid));
 		}
+std::cout << " 7 ";
 		stream();
+cout << " 8 ";
 		calLatticeRhoVelocity();
+cout << " 9 ";
 		collide();
 		(*fluid).copy((*tmpfluid));	
 

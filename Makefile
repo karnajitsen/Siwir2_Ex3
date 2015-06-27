@@ -13,6 +13,7 @@ lbm:
 	$(CC) $(CFLAGS) $(SOURCES) -o lbm
 	
 prm:
+	rm -rf ./output/*.*
 	./lbm params.dat
 
 ref0:
@@ -25,4 +26,5 @@ test:
 
 clean:
 	rm -rf lbm
+	
 .PHONY : all clean

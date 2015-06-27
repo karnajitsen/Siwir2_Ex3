@@ -44,9 +44,10 @@ inline void writeVTK(string filename, Grid grd)
 	{
 		for (size_t j = 1; j < grd.getXsize() - 1; j++)
 		{
-			file << grd(i, j, 9) << " " << grd(i, j, 9) << " 0" << std::endl;
+			file << grd(i, j, 9) << " " << grd(i, j, 10) << " 0" << std::endl;
 		}
 	}
 	file << std::endl;
 	file << std::endl;
+ 
 }

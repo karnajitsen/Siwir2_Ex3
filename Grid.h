@@ -31,7 +31,7 @@ public:
     {
         sizeX = x+2;
         sizeY = y+2;
-		ld = sizeX * CELLS;
+	ld = sizeX * CELLS;
 	size = ld*sizeY*sizeof(double);
         //data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
 	data = new double[ld*sizeY];
@@ -85,23 +85,18 @@ public:
         }
     }*/
 
-	inline void swap(const Grid tgtgrd)
-	{
-
-	}
-
     inline double& operator()(const size_t x, const size_t y, const size_t f)
     {
-        assert(x < sizeX);
-        assert(y < sizeY);
+        assert(x < sizeY);
+        assert(y < sizeX);
         return data[x*ld + y * CELLS + f];
     }
 
 	inline double& operator()(const size_t x, const size_t y, const size_t f) const
     {
-        assert(x < sizeX);
-        assert(y < sizeY);
-		return data[x*ld + y * CELLS + f];
+        assert(x < sizeY);
+        assert(y < sizeX);
+	return data[x*ld + y * CELLS + f];
     }
 
     inline Grid * operator+=(const Grid * rhs)
