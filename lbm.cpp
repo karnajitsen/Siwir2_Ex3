@@ -51,21 +51,21 @@ inline void stream()
 				double pt = (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], 12);
 				size_t l;
                                         if(k != 4)
-                                        l = (k+(Q-1)/2)% ( Q-1);
+                                        l = (k+((Q-1)/2))% ( Q-1);
                                         else
                                         l=8;
 
-				if (pt > 0.0 || pt != 2.0 )
-					*(tmpfluid)(i, j, l) = *(fluid)(i, j, k);       // Bounce back from vertical and bottom walls
+				if (pt > 0.0 && pt != 2.0 )
+					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls
 					
 				if (pt == 2.0)
-					*(tmpfluid)(i, j, l) = *(fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
+					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
 				else
-				    *(tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], k) = *(fluid)(i,j,k);  // Free Streaming
+				    (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], k) = (*fluid)(i,j,k);  // Free Streaming
 				
 			}
 
-			*(tmpfluid)(i, j, 0) = *(fluid)(i, j, 0);
+			(*tmpfluid)(i, j, 0) = (*fluid)(i, j, 0);
 		}
 	}
 }
@@ -79,14 +79,14 @@ inline void calLatticeRhoVelocity()
 		{
 			for (int k = 0; k < Q; k++)
 			{
-				rh += *(tmpfluid)(i, j, k);
-				vx += *(tmpfluid)(i, j, k) * disvel[k][0];
-				vy += *(tmpfluid)(i, j, k) * disvel[k][1];
+				rh += (*tmpfluid)(i, j, k);
+				vx += (*tmpfluid)(i, j, k) * disvel[k][0];
+				vy += (*tmpfluid)(i, j, k) * disvel[k][1];
 			}
 
-			*(tmpfluid)(i, j, 9) = vx / rh;
-			*(tmpfluid)(i, j, 10) = vy / rh;
-			*(tmpfluid)(i, j, 11) = rh;
+			(*tmpfluid)(i, j, 9) = vx / rh;
+			(*tmpfluid)(i, j, 10) = vy / rh;
+			(*tmpfluid)(i, j, 11) = rh;
 
 		}
 	}
@@ -108,7 +108,7 @@ inline void collide()
 		{
 			for (int k = 0; k < Q; k++)
 			{
-				*(tmpfluid)(i, j, k) = (1.0 - omega) * *(tmpfluid)(i, j, k) + feq(k, tmpfluid(i, j, 9), tmpfluid(i, j, 10), tmpfluid(i, j, 11));
+				(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
 			}
 		}
 
@@ -161,14 +161,14 @@ int main(int argc, char** argv)
 		if (i%vtk_step == 0)
 		{
 			string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(k)) + std::string(".vtk");
-			writeVTK(vtkfile,fluid);
+			writeVTK(vtkfile,(*fluid));
 		}
 		stream();
 		calLatticeRhoVelocity();
 		collide();
-		fluid.copy(tmpfluid);	
+		(*fluid).copy((*tmpfluid));	
 
 	}
-	fluid.~Grid();
-	tmpfluid.~Grid();
+	fluid->~Grid();
+	tmpfluid->~Grid();
 }
