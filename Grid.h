@@ -8,7 +8,7 @@
 #include<malloc.h>
 #define LD 16
 #define ALLIGNMENT 32
-#define CELLS 14
+#define CELLS 13
 using namespace std;
 //#define M_PI 3.14
 class Grid
@@ -24,17 +24,17 @@ public:
         data = (double*)memalign(ALLIGNMENT, 0);
         sizeX = 0;
         sizeY = 0;
-		size = 0.0;
+	size = 0.0;
     }
 
 	explicit Grid(const size_t x, const size_t y, const double* fi, const double ux, const double uy, const double rho)
     {
         sizeX = x+2;
         sizeY = y+2;
-		ld = sizeX;
-		size = CELLS*ld*y*sizeof(double);
+	ld = sizeX * CELLS;
+	size = ld*sizeY*sizeof(double);
         //data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
-		data = new double[CELLS*ld*y];
+	data = new double[ld*sizeY];
         //data = (double*) _aligned_malloc(ld*y*sizeof(double), ALLIGNMENT);
 		for (size_t i = 0; i < sizeY; i++)
 		{
@@ -94,14 +94,14 @@ public:
     {
         assert(x < sizeX);
         assert(y < sizeY);
-        return data[y*ld + x * CELLS + f];
+        return data[x*ld + y * CELLS + f];
     }
 
 	inline double& operator()(const size_t x, const size_t y, const size_t f) const
     {
         assert(x < sizeX);
         assert(y < sizeY);
-		return data[y*ld + x * CELLS + f];
+		return data[x*ld + y * CELLS + f];
     }
 
     inline Grid * operator+=(const Grid * rhs)
