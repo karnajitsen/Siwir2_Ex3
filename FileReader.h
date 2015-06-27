@@ -16,11 +16,11 @@ using namespace std;
 	class FileReader
 	{
 		public:
-			FileReader::FileReader()
+			FileReader()
 			{
 
 			}
-			void FileReader::readParameters(string filename)
+			void readParameters(string filename)
 			{
 				ifstream input;
 				string line;
