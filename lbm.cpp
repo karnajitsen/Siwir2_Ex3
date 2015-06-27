@@ -140,6 +140,9 @@ int main(int argc, char** argv)
 	std::cout << "vtk_file = " << vtkfilename << '\n';
 	std::cout << "vtk_step = " << vtk_step << '\n';
 
+	vtkfilename = vtkfilename.substr(0, vtkfilename.find('.')-1);
+	std::cout << "vtk_file = " << vtkfilename << '\n';
+
 
 	init();
 	int k = 0;
@@ -148,7 +151,7 @@ int main(int argc, char** argv)
 	{
 		if (i%vtk_step == 0)
 		{
-			string vtkfile = std::string("./output/ldc") + std::string(to_string(k)) + std::string(".vtk");
+			string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(k)) + std::string(".vtk");
 			writeVTK(vtkfile,fluid);
 		}
 		stream();
