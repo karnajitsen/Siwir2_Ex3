@@ -2,18 +2,18 @@ CC=g++
 CFLAGS= -Wall -std=c++11 -pedantic -g
 #CFLAGS= -fpermissive
 LDFLAGS=
-SOURCES=waveguide.cpp
+SOURCES=lbm.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=waveguide
+EXECUTABLE=lbm
 COMMON=
 
-all: wave
+all: clean lbm
 
 wave:
-	$(CC) $(CFLAGS) $(SOURCES) -o waveguide
+	$(CC) $(CFLAGS) $(SOURCES) -o lbm
 	
-ref1:
-	./waveguide 0.01 0.0000000001 1
+prm:
+	./lbm params.dat
 
 ref0:
 	./waveguide 0.01 0.0000000001 0
@@ -24,5 +24,5 @@ test:
 	./waveguide 0.01 0.0000000001
 
 clean:
-	
+	rm -rf lbm
 .PHONY : all clean
