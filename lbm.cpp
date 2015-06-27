@@ -5,6 +5,11 @@
 #include<stdlib.h>
 
 #include "Grid.h"
+#include "FileReader.h"
+#include "VTKFileWriter.h"
+
+using namespace std;
+
 typedef double Real;
 
 #define D 2
@@ -114,33 +119,42 @@ int main(int argc, char** argv)
 	string fname = argv[1];
 	ifstream paramfile;
 	string tmp;
-	paramfile.open("./LBMreferenceOutputs/referenceOutputs/" + fname);
+	string vtkfilename;
+	size_t vtk_step;
 	
-	paramfile >> tmp;
-	paramfile >> sizex;
+	FileReader* fr = new FileReader();
 
-	paramfile >> tmp;
-	paramfile >> sizey;
+	fr->readParameters( fname);
 
-	paramfile >> tmp;
-	paramfile >> timesteps;
+	sizex = fr->getParameter<size_t>("sizex");
+	sizex = fr->getParameter<size_t>("sizey");
+	timesteps = fr->getParameter<size_t>("timesteps");
+	omega = fr->getParameter<Real>("omega");
+	vtkfilename = fr->getParameter<string>("vtk_file");
+	vtk_step = fr->getParameter<size_t>("vtk_step");
 
-	paramfile >> tmp;
-	paramfile >> omega;
+	std::cout << "sizex = " << sizex << '\n';
+	std::cout << "sizey = " << sizey << '\n';
+	std::cout << "timesteps = " << timesteps << '\n';
+	std::cout << "omega = " << omega << '\n';
+	std::cout << "vtk_file = " << vtkfilename << '\n';
+	std::cout << "vtk_step = " << vtk_step << '\n';
 
 
 	init();
-
+	int k = 0;
+	
 	for (size_t i = 0; i < timesteps; i++)
 	{
+		if (i%vtk_step == 0)
+		{
+			string vtkfile = std::string("./output/ldc") + std::string(to_string(k)) + std::string(".vtk");
+			writeVTK(vtkfile,fluid);
+		}
 		stream();
 		calLatticeRhoVelocity();
 		collide();
-		fluid.copy(tmpfluid);
+		fluid.copy(tmpfluid);	
+
 	}
-
-
-
-
-
 }
