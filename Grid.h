@@ -38,7 +38,7 @@ public:
         //data = (double*) _aligned_malloc(ld*y*sizeof(double), ALLIGNMENT);
 		for (size_t i = 0; i < sizeY; i++)
 		{
-			for (size_t j = 0; j < sizeY; j++)
+			for (size_t j = 0; j < sizeX; j++)
 			{
 				
 				data[i * ld + j * CELLS + 0] = fi[0];
