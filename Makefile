@@ -9,7 +9,7 @@ COMMON=
 
 all: clean lbm
 
-wave:
+lbm:
 	$(CC) $(CFLAGS) $(SOURCES) -o lbm
 	
 prm:

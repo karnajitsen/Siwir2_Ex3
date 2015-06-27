@@ -32,9 +32,10 @@ using namespace std;
 					{
 						size_t space = line.find_first_of(' ');
 						dat param;
-						param.key = line.substr(0, space-1);
+						param.key = line.substr(0, space);
 						param.value = line.substr(space + 1);
 						m_params.push_back(param);
+						cout << param.key << " " << param.value << '\n';
 					}
 					input.close();
 				}
@@ -45,12 +46,12 @@ using namespace std;
 			{
 				for(vector<dat>::iterator it = m_params.begin() ; it != m_params.end(); ++it)
 				{
-					if(!eqit->key.compare(valueName))
+					if(!it->key.compare(valueName))
 					{
 						return boost::lexical_cast<Type>(it->value);
 					}
 				}
-				return boost::lexical_cast<std::string>("nix wars");
+				return boost::lexical_cast<Type>("nix wars");
 			}
 		
 		private:
