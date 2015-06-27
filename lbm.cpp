@@ -127,7 +127,7 @@ int main(int argc, char** argv)
 	fr->readParameters( fname);
 
 	sizex = fr->getParameter<size_t>("sizex");
-	sizex = fr->getParameter<size_t>("sizey");
+	sizey = fr->getParameter<size_t>("sizey");
 	timesteps = fr->getParameter<size_t>("timesteps");
 	omega = fr->getParameter<Real>("omega");
 	vtkfilename = fr->getParameter<string>("vtk_file");
