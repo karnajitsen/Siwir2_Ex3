@@ -22,7 +22,7 @@ Grid fluid, tmpfluid;
 double uw[2] = {0.8, 0};
 double disvel[Q][2] = { { 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 1.0 }, { -1.0, 0.0 }, { 0.0, -1.0 }, { 1.0, 1.0 }, { -1.0, 1.0 }, { -1.0, -1.0 }, { 1.0, -1.0 } };
 int neighbours[Q][2] = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 1 }, { -1, 1 }, { -1, -1 }, { 1, -1 } };
-double stencil[Q] = { 1.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0 };
+	double stencil[Q] = { 1.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0, 4.0 / 9.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0, 1.0 / 36.0 };
 
 inline void init()
 {
@@ -110,7 +110,7 @@ inline void collide()
 int main(int argc, char** argv)
 {
 
-	if (argc < 4)
+	if (argc < 2)
 	{
 		std::cout << "Invalid number of argument";
 		exit(0);
@@ -157,4 +157,6 @@ int main(int argc, char** argv)
 		fluid.copy(tmpfluid);	
 
 	}
+	fluid.~Grid();
+	tmpfluid.~Grid();
 }

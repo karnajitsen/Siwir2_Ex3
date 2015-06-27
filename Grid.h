@@ -33,7 +33,8 @@ public:
         sizeY = y+2;
 		ld = sizeX + LD;
 		size = CELLS*ld*y*sizeof(double);
-        data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
+        //data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
+		data = new double[CELLS*ld*y];
         //data = (double*) _aligned_malloc(ld*y*sizeof(double), ALLIGNMENT);
 		for (size_t i = 0; i < sizeY; i++)
 		{
