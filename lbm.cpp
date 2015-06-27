@@ -42,18 +42,16 @@ inline double calLidVel(size_t k)
 
 inline void stream()
 {
-	for (size_t i = 1; i <= sizey; i++)
+	for (int i = 1; i <= (int)sizey; i++)
 	{
-		for (size_t j = 1; j <= sizex; j++)
+		for (int j = 1; j <= (int)sizex; j++)
 		{
 			for (int k = 1; k < Q; k++)
 			{
 				double pt = (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], 12);
 				size_t l;
-                                        if(k != 4)
-                                        l = (k+((Q-1)/2))% ( Q-1);
-                                        else
-                                        l=8;
+                if(k != 4) l = (k+((Q-1)/2))% ( Q-1);
+                else l=8;
 
 				if (pt > 0.0 && pt != 2.0 )
 					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls
