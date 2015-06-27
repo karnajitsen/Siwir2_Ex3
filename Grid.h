@@ -31,7 +31,7 @@ public:
     {
         sizeX = x+2;
         sizeY = y+2;
-		ld = sizeX + LD;
+		ld = sizeX;
 		size = CELLS*ld*y*sizeof(double);
         //data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
 		data = new double[CELLS*ld*y];
