@@ -28,9 +28,9 @@ inline void writeVTK(string filename, Grid grd)
 
 	file << "LOOKUP_TABLE default" << std::endl;
 
-	for (int i = 1; i < grd.getYsize()-1; i++)
+	for (size_t i = 1; i < grd.getYsize()-1; i++)
 	{
-		for (int j = 1; j < grd.getXsize()-1; j++)
+		for (size_t j = 1; j < grd.getXsize()-1; j++)
 		{
 			file << grd(i,j,11) << std::endl;
 		}
@@ -40,9 +40,9 @@ inline void writeVTK(string filename, Grid grd)
 
 	file << "VECTORS velocity double" << std::endl;
 
-	for (int i = 1; i < grd.getYsize() - 1; i++)
+	for (size_t i = 1; i < grd.getYsize() - 1; i++)
 	{
-		for (int j = 1; j < grd.getXsize() - 1; j++)
+		for (size_t j = 1; j < grd.getXsize() - 1; j++)
 		{
 			file << grd(i, j, 9) << " " << grd(i, j, 9) << " 0" << std::endl;
 		}
