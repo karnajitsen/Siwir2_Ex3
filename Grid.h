@@ -4,7 +4,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include <memory>
-#include <string>
+#include <string.h>
 #include<malloc.h>
 #define LD 16
 #define ALLIGNMENT 32
