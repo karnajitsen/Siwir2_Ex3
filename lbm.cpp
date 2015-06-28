@@ -22,7 +22,8 @@ Grid *fluid, *tmpfluid;
 double uw[2] = {0.08, 0};
 double disvel[Q][2] = { { 0.0, 0.0 }, { 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 1.0 }, { -1.0, 1.0 }, { -1.0, 0.0 }, { -1.0, -1.0 }, { 0.0, -1.0 }, { 1.0, -1.0 } };
 int neighbours[Q][2] = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 },  { 0, -1 }, { 1, -1 } };
-double stencil[Q] = { 4.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0 };
+//double stencil[Q] = { 4.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0 };
+double stencil[Q] = { 0.4444444, 0.1111111, 0.0277777, 0.1111111, 0.0277777, 0.1111111, 0.0277777, 0.1111111, 0.0277777 };
 
 inline void init()
 {
@@ -110,7 +111,7 @@ inline void collide()
 	{
 		for (size_t j = 1; j <= sizex; j++)
 		{
-			for (int k = 0; k < Q; k++)
+			for (int k = 1; k < Q; k++)
 			{
 			(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + omega * feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
 			}
@@ -163,13 +164,13 @@ int main(int argc, char** argv)
 	for (size_t i = 1; i <= timesteps; i++)
 	{
 	
-		stream();
+		/*stream();
 //cout << " 8 ";
 		calLatticeRhoVelocity();
 //cout << " 9 ";
 		collide();
-		(*fluid).copy(tmpfluid);
-		if (i % 5 == 0)
+		(*fluid).copy(tmpfluid);*/
+		//if (i % 5 == 0)
 		{
 			cout << '\n';
 			for (size_t i = 1; i <= sizey; i++)
@@ -179,12 +180,34 @@ int main(int argc, char** argv)
 					cout << i << " " << j << " ";
 					for (int k = 0; k < 13; k++)
 					{
-						cout << (*tmpfluid)(i, j, k) << " ";
+						cout << (*fluid)(i, j, k) << " ";
 					}
 					cout << '\n';
 				}
 			}
 		}
+		{
+                        cout << '\n';
+                        for (size_t i = 1; i <= sizey; i++)
+                        {
+                                for (size_t j = 1; j <= sizex; j++)
+                                {
+                                        cout << i << " " << j << " ";
+                                        for (int k = 0; k < 13; k++)
+                                        {
+                                                cout << (*tmpfluid)(i, j, k) << " ";
+                                        }
+                                        cout << '\n';
+                                }
+                        }
+                }
+
+ stream();
+//cout << " 8 ";
+                calLatticeRhoVelocity();
+//cout << " 9 ";
+                collide();
+                (*fluid).copy(tmpfluid);
 		 if (i==1 || i%vtk_step == 0)
                 {
                         string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
