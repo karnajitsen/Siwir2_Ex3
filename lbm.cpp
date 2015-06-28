@@ -70,7 +70,7 @@ inline void stream()
 
 inline void calLatticeRhoVelocity()
 {
-	double rh=0.0, vx = 0.0, vy =0.0;
+	/*double rh=0.0, vx = 0.0, vy =0.0;
 	for (size_t i = 1; i <= sizey; i++)
 	{
 		for (size_t j = 1; j <= sizex; j++)
@@ -87,7 +87,7 @@ inline void calLatticeRhoVelocity()
 			(*tmpfluid)(i, j, 11) = rh;
 
 		}
-	}
+	}*/
 
 }
 
