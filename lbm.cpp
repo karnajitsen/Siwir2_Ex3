@@ -161,13 +161,13 @@ int main(int argc, char** argv)
 			string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(k)) + std::string(".vtk");
 			writeVTK(vtkfile,(*fluid));
 		}
-std::cout << " 7 ";
+//std::cout << " 7 ";
 		stream();
-cout << " 8 ";
+//cout << " 8 ";
 		calLatticeRhoVelocity();
 cout << " 9 ";
 		collide();
-		//(*fluid).copy((*tmpfluid));	
+		(*fluid).copy((*tmpfluid));	
 
 	}
 	fluid->~Grid();
