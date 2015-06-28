@@ -71,19 +71,7 @@ inline void stream()
 inline void calLatticeRhoVelocity()
 {
 	double rh=0.0, vx = 0.0, vy =0.0;
-	cout << '\n';
-	for (size_t i = 1; i <= sizey; i++)
-	{
-		for (size_t j = 1; j <= sizex; j++)
-		{   
-			cout << i << " " << j << " ";
-			for (int k = 0; k < 13; k++)
-			{
-				cout << (*tmpfluid)(i, j, k) << " ";
-			}
-			cout << '\n';
-		}
-	}
+	
 
 
 	for (size_t i = 1; i <= sizey; i++)
@@ -180,7 +168,23 @@ int main(int argc, char** argv)
 		calLatticeRhoVelocity();
 //cout << " 9 ";
 		collide();
-		(*fluid).copy(tmpfluid);	
+		(*fluid).copy(tmpfluid);
+		if (i % 5 == 0)
+		{
+			cout << '\n';
+			for (size_t i = 1; i <= sizey; i++)
+			{
+				for (size_t j = 1; j <= sizex; j++)
+				{
+					cout << i << " " << j << " ";
+					for (int k = 0; k < 13; k++)
+					{
+						cout << (*tmpfluid)(i, j, k) << " ";
+					}
+					cout << '\n';
+				}
+			}
+		}
 		 if (i==1 || i%vtk_step == 0)
                 {
                         string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
