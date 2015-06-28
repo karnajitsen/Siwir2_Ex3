@@ -167,7 +167,7 @@ cout << " 8 ";
 		calLatticeRhoVelocity();
 cout << " 9 ";
 		collide();
-		(*fluid).copy((*tmpfluid));	
+		//(*fluid).copy((*tmpfluid));	
 
 	}
 	fluid->~Grid();
