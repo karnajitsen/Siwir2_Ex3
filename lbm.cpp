@@ -109,7 +109,7 @@ inline void collide()
 		{
 			for (int k = 0; k < Q; k++)
 			{
-			(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
+			(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + omega * feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
 			}
 		}
 
