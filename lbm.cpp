@@ -100,7 +100,7 @@ inline double feq(size_t const k, double ux, double const uy, double const rho)
 
 inline void collide()
 {
-	for (size_t i = 1; i <= sizey; i++)
+	/*for (size_t i = 1; i <= sizey; i++)
 	{
 		for (size_t j = 1; j <= sizex; j++)
 		{
@@ -110,7 +110,7 @@ inline void collide()
 			}
 		}
 
-	}
+	}*/
 
 }
 
