@@ -48,9 +48,9 @@ inline void stream()
 		{
 			for (int k = 1; k < Q; k++)
 			{
-				double pt = (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], 12);
+				double pt = (*tmpfluid)(i + neighbours[k][1], j + neighbours[k][0], 12);
 				size_t l;
-                if(k != 4) l = (k+((Q-1)/2))% ( Q-1);
+                if(k != 4) l = (k+(Q-1)/2)% ( Q-1);
                 else l=8;
 
 				if (pt > 0.0 && pt != 3.0 )
@@ -59,7 +59,7 @@ inline void stream()
 				if (pt == 3.0)
 					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
 				else
-				    (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], k) = (*fluid)(i,j,k);  // Free Streaming
+				    (*tmpfluid)(i + neighbours[k][1], j + neighbours[k][0], k) = (*fluid)(i,j,k);  // Free Streaming
 				
 			}
 
@@ -98,7 +98,7 @@ inline double feq(size_t const k, double ux, double const uy, double const rho)
 {
 	double r = (ux * disvel[k][0] + uy * disvel[k][1]);
 	double u2 = ux * ux + uy * uy;
-	return stencil[k] * (rho + 3.0 * r + 4.5 * r*r - 1.5 * u2);
+	return (stencil[k] * (rho + 3.0 * r + 4.5 * r*r - 1.5 * u2));
 }
 
 inline void collide()
@@ -153,9 +153,9 @@ int main(int argc, char** argv)
 	vtkfilename = vtkfilename.substr(0, vtkfilename.find('.'));
 	std::cout << "vtk_file = " << vtkfilename << '\n';
 
-	cout << "$$$$$$$$$$";
+	//cout << "$$$$$$$$$$";
 	init();
-	int k = 0;
+	//int k = 0;
 	
 	for (size_t i = 1; i <= timesteps; i++)
 	{
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
                 {
                         string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
                         writeVTK(vtkfile,fluid);
-                        k++;
+                       
                 }
 	}
 	fluid->~Grid();

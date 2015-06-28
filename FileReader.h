@@ -35,7 +35,7 @@ using namespace std;
 						param.key = line.substr(0, space);
 						param.value = line.substr(space + 1);
 						m_params.push_back(param);
-						cout << param.key << " " << param.value << '\n';
+						//cout << param.key << " " << param.value << '\n';
 					}
 					input.close();
 				}

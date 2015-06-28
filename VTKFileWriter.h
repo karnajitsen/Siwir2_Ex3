@@ -6,7 +6,7 @@ using namespace std;
 inline void writeVTK(string filename, Grid *grd)
 {
 	ofstream file;
-			cout << filename;
+	//cout << filename;
 	file.open(filename);
 	int len = (grd->getXsize() - 2) * (grd->getYsize() - 2);
 	file << "# vtk DataFile Version 4.0" << std::endl;
