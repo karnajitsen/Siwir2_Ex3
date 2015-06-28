@@ -54,11 +54,18 @@ public:
 				data[i * ld + j * CELLS + 9] = ux;
 				data[i * ld + j * CELLS + 10] = uy;
 				data[i * ld + j * CELLS+12] = 0.0;
+<<<<<<< HEAD
 				if (i == sizeY - 1) data[i * ld + j * CELLS+12] = 3.0;
 				if (i == 0) data[i * ld + j * CELLS+12] = 1.0;
 				if (j == 0) data[i * ld + j * CELLS+12] = 4.0;
 				if (j == sizeX - 1)  data[i * ld + j * CELLS+12] = 2.0;
 			//	if (i == sizeY - 1) data[i * ld + j * CELLS+12] = 3.0;
+=======
+				if (i == sizeY - 1) data[i * ld + j * CELLS + 12] = 3.0;
+				if (i == 0) data[i * ld + j * CELLS+12] = 1.0;
+				if (j == 0) data[i * ld + j * CELLS+12] = 4.0;
+				if (j == sizeX - 1)  data[i * ld + j * CELLS+12] = 2.0;				
+>>>>>>> 7562127678f60a5fee23e97fe9275e93d45df473
 				data[i * ld + j * CELLS + 11] =  rho;
 			}
 		}
