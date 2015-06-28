@@ -48,33 +48,36 @@ inline void stream()
 		{
 			for (int k = 1; k < Q; k++)
 			{
-				/*double pt = (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], 12);
+				double pt = (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], 12);
 				size_t l;
                 if(k != 4) l = (k+((Q-1)/2))% ( Q-1);
-                else l=8;*/
+                else l=8;
 
-				//if (pt > 0.0 && pt != 2.0 )
-				//	(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls
-				//	
-				//if (pt == 2.0)
-				//	(*tmpfluid)(i, j, l) = (*fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
-				//else
-				//    (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], k) = (*fluid)(i,j,k);  // Free Streaming
-				//
+				if (pt > 0.0 && pt != 2.0 )
+					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls
+					
+				if (pt == 2.0)
+					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
+				else
+				    (*tmpfluid)(i + neighbours[k][0], j + neighbours[k][1], k) = (*fluid)(i,j,k);  // Free Streaming
+				
 			}
 
-			//(*tmpfluid)(i, j, 0) = (*fluid)(i, j, 0);
+			(*tmpfluid)(i, j, 0) = (*fluid)(i, j, 0);
 		}
 	}
 }
 
 inline void calLatticeRhoVelocity()
 {
-	/*double rh=0.0, vx = 0.0, vy =0.0;
+	double rh=0.0, vx = 0.0, vy =0.0;
 	for (size_t i = 1; i <= sizey; i++)
 	{
 		for (size_t j = 1; j <= sizex; j++)
 		{
+			rh = 0.0;
+			vx = 0.0;
+			vy = 0.0;
 			for (int k = 0; k < Q; k++)
 			{
 				rh += (*tmpfluid)(i, j, k);
@@ -87,7 +90,7 @@ inline void calLatticeRhoVelocity()
 			(*tmpfluid)(i, j, 11) = rh;
 
 		}
-	}*/
+	}
 
 }
 
@@ -100,7 +103,7 @@ inline double feq(size_t const k, double ux, double const uy, double const rho)
 
 inline void collide()
 {
-	/*for (size_t i = 1; i <= sizey; i++)
+	for (size_t i = 1; i <= sizey; i++)
 	{
 		for (size_t j = 1; j <= sizex; j++)
 		{
@@ -110,7 +113,7 @@ inline void collide()
 			}
 		}
 
-	}*/
+	}
 
 }
 
@@ -158,14 +161,15 @@ int main(int argc, char** argv)
 	{
 		if (i%vtk_step == 0)
 		{
-			string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(k)) + std::string(".vtk");
-			writeVTK(vtkfile,(*fluid));
+			string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
+			writeVTK(vtkfile,fluid);
+			k++;
 		}
 //std::cout << " 7 ";
 		stream();
 //cout << " 8 ";
 		calLatticeRhoVelocity();
-cout << " 9 ";
+//cout << " 9 ";
 		collide();
 		(*fluid).copy(tmpfluid);	
 

@@ -72,17 +72,17 @@ public:
 
 	inline void copy(Grid *grd)
 	{
-		/*for (size_t i = 0; i < sizeY; i++)
+		for (size_t i = 0; i < sizeY; i++)
 		{
 			for (size_t j = 0; j < sizeX; j++)
 			{
 				for (int k = 0; k < CELLS; k++)
 				{
-					data[i * ld + j*CELLS + k] = grd(i, j, k);
+					data[i * ld + j*CELLS + k] = (*grd)(i, j, k);
 				}
 			}
-		}*/
-		memcpy(data, &(*grd)(0, 0, 0), ld*sizeY);
+		}
+	//	memcpy(data, &(*grd)(0, 0, 0), ld*sizeY);
 	}
 
     
