@@ -49,5 +49,5 @@ inline void writeVTK(string filename, Grid grd)
 	}
 	file << std::endl;
 	file << std::endl;
- 
+	file.close();
 }

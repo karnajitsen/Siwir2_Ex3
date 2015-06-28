@@ -22,6 +22,7 @@ public:
     explicit Grid()
     {
         data = (double*)memalign(ALLIGNMENT, 0);
+
         sizeX = 0;
         sizeY = 0;
 	size = 0.0;
@@ -29,8 +30,8 @@ public:
 
 	explicit Grid(const size_t x, const size_t y, const double* fi, const double ux, const double uy, const double rho)
     {
-        sizeX = x+2;
-        sizeY = y+2;
+        sizeX = x;
+        sizeY = y;
 	ld = sizeX * CELLS;
 	size = ld*sizeY*sizeof(double);
         //data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
@@ -69,31 +70,22 @@ public:
         free(data);
     }
 
-	inline void copy(Grid grd)
+	inline void copy(Grid *grd)
 	{
-		for (size_t i = 0; i < sizeY; i++)
+		/*for (size_t i = 0; i < sizeY; i++)
 		{
 			for (size_t j = 0; j < sizeX; j++)
 			{
 				for (int k = 0; k < CELLS; k++)
 				{
-					data[i* ld + j*CELLS + k] = grd(i, j, k);
+					data[i * ld + j*CELLS + k] = grd(i, j, k);
 				}
 			}
-		}
+		}*/
+		memcpy(data, &(*grd)(0, 0, 0), ld*sizeY);
 	}
 
-    /*inline void reset()
-    {
-        for (size_t i = 0; i < sizeY; i++)
-        {
-            for (size_t j = 0; j < sizeX; j++)
-            {
-                data[i*ld + j] = 0.0;
-            }
-        }
-    }*/
-
+    
     inline double& operator()(const size_t x, const size_t y, const size_t f)
     {
         assert(x < sizeY);
@@ -106,16 +98,6 @@ public:
         assert(x < sizeY);
         assert(y < sizeX);
 	return data[x*ld + y * CELLS + f];
-    }
-
-    inline Grid * operator+=(const Grid * rhs)
-    {
-        return this;
-    }
-
-    inline Grid* operator-=(const Grid* rhs)
-    {
-        return this;
     }
 
     inline size_t getXsize() const

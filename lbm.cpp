@@ -28,8 +28,8 @@ inline void init()
 {
 cout << "@@@@################";
 	double ux = 0.0, uy = 0.0, initrho =1.0;
-	fluid = new Grid(sizex, sizey, stencil, ux, uy, initrho);
-	tmpfluid = new Grid(sizex, sizey, stencil, ux, uy, initrho);
+	fluid = new Grid(sizex+2, sizey+2, stencil, ux, uy, initrho);
+	tmpfluid = new Grid(sizex+2, sizey+2, stencil, ux, uy, initrho);
 	/*for (int i = 0; i < Q; i++)
 	feq[i] = stencil[i];*/
 cout << "@@@@@@@@@@@@@@@@@@@@@@";
@@ -167,7 +167,7 @@ int main(int argc, char** argv)
 		calLatticeRhoVelocity();
 cout << " 9 ";
 		collide();
-		(*fluid).copy((*tmpfluid));	
+		(*fluid).copy(tmpfluid);	
 
 	}
 	fluid->~Grid();
