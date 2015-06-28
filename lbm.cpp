@@ -19,7 +19,7 @@ size_t sizex, sizey, timesteps;
 Real omega;
 
 Grid *fluid, *tmpfluid;
-double uw[2] = {0.8, 0};
+double uw[2] = {0.08, 0};
 double disvel[Q][2] = { { 0.0, 0.0 }, { 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 1.0 }, { -1.0, 1.0 }, { -1.0, 0.0 }, { -1.0, -1.0 }, { 0.0, -1.0 }, { 1.0, -1.0 } };
 int neighbours[Q][2] = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 },  { 0, -1 }, { 1, -1 } };
 double stencil[Q] = { 4.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0 };
@@ -157,22 +157,21 @@ int main(int argc, char** argv)
 	init();
 	int k = 0;
 	
-	for (size_t i = 0; i < timesteps; i++)
+	for (size_t i = 1; i <= timesteps; i++)
 	{
-		if (i%vtk_step == 0)
-		{
-			string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
-			writeVTK(vtkfile,fluid);
-			k++;
-		}
-//std::cout << " 7 ";
+	
 		stream();
 //cout << " 8 ";
 		calLatticeRhoVelocity();
 //cout << " 9 ";
 		collide();
 		(*fluid).copy(tmpfluid);	
-
+		 if (i==1 || i%vtk_step == 0)
+                {
+                        string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
+                        writeVTK(vtkfile,fluid);
+                        k++;
+                }
 	}
 	fluid->~Grid();
 	tmpfluid->~Grid();

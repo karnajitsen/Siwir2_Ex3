@@ -54,10 +54,11 @@ public:
 				data[i * ld + j * CELLS + 9] = ux;
 				data[i * ld + j * CELLS + 10] = uy;
 				data[i * ld + j * CELLS+12] = 0.0;
+				if (i == sizeY - 1) data[i * ld + j * CELLS+12] = 3.0;
 				if (i == 0) data[i * ld + j * CELLS+12] = 1.0;
 				if (j == 0) data[i * ld + j * CELLS+12] = 4.0;
 				if (j == sizeX - 1)  data[i * ld + j * CELLS+12] = 2.0;
-				if (i == sizeY - 1) data[i * ld + j * CELLS+12] = 3.0;
+			//	if (i == sizeY - 1) data[i * ld + j * CELLS+12] = 3.0;
 				data[i * ld + j * CELLS + 11] =  rho;
 			}
 		}
