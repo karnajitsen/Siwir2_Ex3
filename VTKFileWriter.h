@@ -15,11 +15,12 @@ inline void writeVTK(string filename, Grid *grd)
 	file << "DATASET STRUCTURED_POINTS" << std::endl;
 	file << "DIMENSIONS " << grd->getXsize()-2 << " " << grd->getYsize()-2 << " 1"  << std::endl;
 	file << "ORIGIN 0 0 0" << std::endl;
+    file << "SPACING 1 1 1" << std::endl;
 	file << "POINT_DATA " << len << std::endl;
 	file << std::endl;
 	file << std::endl;
-	file << "SCALARS flags double 1" << len << std::endl;
-	file << "LOOKUP_TABLE default" << len << std::endl;
+    file << "SCALARS flags double 1"  << std::endl;
+    file << "LOOKUP_TABLE default" << std::endl;
 	
 	for (int i = 0; i < len; i++)
 	{

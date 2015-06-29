@@ -1,6 +1,6 @@
-sizex 5
-sizey 5
-timesteps 10
+sizex 50
+sizey 50
+timesteps 100
 omega 1.9
 vtk_file example.vtk
-vtk_step 10
+vtk_step 1

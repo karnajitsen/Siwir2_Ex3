@@ -8,7 +8,7 @@
 #include<malloc.h>
 #define LD 16
 #define ALLIGNMENT 32
-#define CELLS 13
+#define CELLS 12
 using namespace std;
 //#define M_PI 3.14
 class Grid
@@ -16,6 +16,7 @@ class Grid
 
     //__declspec(align(128))
     double * __restrict data = NULL;
+    int * __restrict bounry = NULL ;
     size_t sizeX, sizeY, ld, size;
     
 public:
@@ -36,6 +37,7 @@ public:
 	size = ld*sizeY*sizeof(double);
         //data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
 	data = new double[ld*sizeY];
+    bounry = new int[sizeX*sizeY];
         //data = (double*) _aligned_malloc(ld*y*sizeof(double), ALLIGNMENT);
 		for (size_t i = 0; i < sizeY; i++)
 		{
@@ -53,12 +55,13 @@ public:
 				data[i * ld + j * CELLS + 8] = fi[8];
 				data[i * ld + j * CELLS + 9] = ux;
 				data[i * ld + j * CELLS + 10] = uy;
-				data[i * ld + j * CELLS+12] = 0.0;
-				if (i == sizeY - 1) data[i * ld + j * CELLS+12] = 3.0;
-				if (i == 0) data[i * ld + j * CELLS+12] = 1.0;
-				if (j == 0) data[i * ld + j * CELLS+12] = 4.0;
-				if (j == sizeX - 1)  data[i * ld + j * CELLS+12] = 2.0;
-				data[i * ld + j * CELLS + 11] =  rho;
+                data[i * ld + j * CELLS + 11] =  rho;
+                bounry[i * sizeX + j] = 0;
+                if (i == 0) bounry[i * sizeX + j] = 1;
+                if (j == 0 && i != sizeY - 1) bounry[i * sizeX + j] = 4;
+                if (j == sizeX - 1 && i != sizeY - 1)  bounry[i * sizeX + j] = 2;
+                if (i == sizeY - 1) bounry[i * sizeX + j ] = 3;
+
 			}
 		}
 
@@ -84,6 +87,11 @@ public:
 		}
 	//	memcpy(data, &(*grd)(0, 0, 0), ld*sizeY);
 	}
+
+    inline int getBoundary(const size_t x, const size_t y) const
+    {
+        return bounry[x * sizeX + y];
+    }
 
     
     inline double& operator()(const size_t x, const size_t y, const size_t f)

@@ -19,11 +19,12 @@ size_t sizex, sizey, timesteps;
 Real omega;
 
 Grid *fluid, *tmpfluid;
-double uw[2] = {0.08, 0};
+double uw[2] = {0.08, 0.0};
 double disvel[Q][2] = { { 0.0, 0.0 }, { 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 1.0 }, { -1.0, 1.0 }, { -1.0, 0.0 }, { -1.0, -1.0 }, { 0.0, -1.0 }, { 1.0, -1.0 } };
 int neighbours[Q][2] = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 },  { 0, -1 }, { 1, -1 } };
 //double stencil[Q] = { 4.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0 };
 double stencil[Q] = { 0.4444444, 0.1111111, 0.0277777, 0.1111111, 0.0277777, 0.1111111, 0.0277777, 0.1111111, 0.0277777 };
+//double stencil[Q] = { 0.44, 0.11, 0.028, 0.11, 0.028, 0.11, 0.028, 0.11, 0.028 };
 
 inline void init()
 {
@@ -49,18 +50,17 @@ inline void stream()
 		{
 			for (int k = 1; k < Q; k++)
 			{
-				double pt = (*tmpfluid)(i + neighbours[k][1], j + neighbours[k][0], 12);
+                int pt = (*tmpfluid).getBoundary(i + neighbours[k][1], j + neighbours[k][0]);
 				size_t l;
-                if(k != 4) l = (k+(Q-1)/2)% ( Q-1);
+                if(k != 4) l = (k+(Q-1)/2)%(Q-1);
                 else l=8;
 
-				if (pt > 0.0 && pt != 3.0 )
-					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls
-					
-				if (pt == 3.0)
+                if (pt > 0 && pt != 3 )
+					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls					
+                else if (pt == 3)
 					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
 				else
-				    (*tmpfluid)(i + neighbours[k][1], j + neighbours[k][0], k) = (*fluid)(i,j,k);  // Free Streaming
+                    (*tmpfluid)(i + neighbours[k][1], j + neighbours[k][0], k) = (*fluid)(i,j,k);  // Free Streaming
 				
 			}
 
@@ -71,8 +71,7 @@ inline void stream()
 
 inline void calLatticeRhoVelocity()
 {
-	double rh=0.0, vx = 0.0, vy =0.0;
-	
+    double rh=0.0, vx = 0.0, vy =0.0;
 
 
 	for (size_t i = 1; i <= sizey; i++)
@@ -111,7 +110,7 @@ inline void collide()
 	{
 		for (size_t j = 1; j <= sizex; j++)
 		{
-			for (int k = 1; k < Q; k++)
+            for (int k = 0; k < Q; k++)
 			{
 			(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + omega * feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
 			}
@@ -161,7 +160,7 @@ int main(int argc, char** argv)
 	init();
 	//int k = 0;
 	
-	for (size_t i = 1; i <= timesteps; i++)
+    for (size_t i = 0; i < timesteps; i++)
 	{
 	
 		/*stream();
@@ -171,7 +170,7 @@ int main(int argc, char** argv)
 		collide();
 		(*fluid).copy(tmpfluid);*/
 		//if (i % 5 == 0)
-		{
+        /*{
 			cout << '\n';
 			for (size_t i = 1; i <= sizey; i++)
 			{
@@ -200,7 +199,7 @@ int main(int argc, char** argv)
                                         cout << '\n';
                                 }
                         }
-                }
+                }*/
 
  stream();
 //cout << " 8 ";
@@ -208,7 +207,7 @@ int main(int argc, char** argv)
 //cout << " 9 ";
                 collide();
                 (*fluid).copy(tmpfluid);
-		 if (i==1 || i%vtk_step == 0)
+         if (i==1 || i%vtk_step == 0)
                 {
                         string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
                         writeVTK(vtkfile,fluid);
