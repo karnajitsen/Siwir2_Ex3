@@ -29,15 +29,14 @@ public:
 	size = 0.0;
     }
 
-	explicit Grid(const size_t x, const size_t y, const double* fi, const double ux, const double uy, const double rho)
-    {
+	explicit Grid(const size_t x, const size_t y, const double* fi, const double ux, const double uy, const double rho, size_t* arr, bool flag)   {
         sizeX = x;
         sizeY = y;
 	ld = sizeX * CELLS;
 	size = ld*sizeY*sizeof(double);
         //data = (double*) memalign(ALLIGNMENT, CELLS*ld*y*sizeof(double));
 	data = new double[ld*sizeY];
-    bounry = new int[sizeX*sizeY];
+	bounry = new int[sizeX*sizeY];
         //data = (double*) _aligned_malloc(ld*y*sizeof(double), ALLIGNMENT);
 		for (size_t i = 0; i < sizeY; i++)
 		{
@@ -56,12 +55,25 @@ public:
 				data[i * ld + j * CELLS + 9] = ux;
 				data[i * ld + j * CELLS + 10] = uy;
                 data[i * ld + j * CELLS + 11] =  rho;
+
                 bounry[i * sizeX + j] = 0;
                 if (i == 0) bounry[i * sizeX + j] = 1;
                 if (j == 0 && i != sizeY - 1) bounry[i * sizeX + j] = 4;
                 if (j == sizeX - 1 && i != sizeY - 1)  bounry[i * sizeX + j] = 2;
                 if (i == sizeY - 1) bounry[i * sizeX + j ] = 3;
 
+			}
+		}
+ 		
+		if(flag)
+		{
+            for(size_t i = 1, k = sizeY-3; i < sizeY -1 ; i++, k--)
+			{
+			for(size_t j = 1; j<sizeX-1 ; j++)
+			{
+             if(arr[k*(sizeX-2)+ j-1] != 255)
+				 bounry[i * sizeX + j] = 1;
+			}
 			}
 		}
 
@@ -118,5 +130,18 @@ public:
         return sizeY;
     }
 
+    inline int getFluidCellNumb()
+    {
+        int cnt = 0;
+        for (size_t i = 0; i < sizeY; i++)
+        {
+            for (size_t j = 0; j < sizeX; j++)
+            {
+                if(bounry[i * sizeX + j] == 0)
+                    cnt++;
+            }
+        }
+        return cnt;
+    }
    
 };

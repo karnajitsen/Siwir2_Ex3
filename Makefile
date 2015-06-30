@@ -16,10 +16,9 @@ prm:
 	rm -rf ./output/*.*
 	./lbm params.dat
 
-ref0:
-	./waveguide 0.01 0.0000000001 0
-	rm -rf *.pdf
-	gnuplot ./plot.p
+prmb:
+	rm -rf ./output/*.*
+	./lbm params_bonus.dat
 test: 
 	$(CC) $(CFLAGS) $(SOURCES) -o waveguide
 	./waveguide 0.01 0.0000000001

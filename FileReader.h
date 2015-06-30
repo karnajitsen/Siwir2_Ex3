@@ -51,7 +51,7 @@ using namespace std;
 						return boost::lexical_cast<Type>(it->value);
 					}
 				}
-				return boost::lexical_cast<Type>("nix wars");
+				return boost::lexical_cast<Type>("9999999999");
 			}
 		
 		private:

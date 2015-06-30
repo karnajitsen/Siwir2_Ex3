@@ -3,7 +3,7 @@
 #include<cmath>
 #include<memory>
 #include<stdlib.h>
-
+#include <sys/time.h>
 #include "Grid.h"
 #include "FileReader.h"
 #include "VTKFileWriter.h"
@@ -17,24 +17,59 @@ typedef double Real;
 //Global Variables
 size_t sizex, sizey, timesteps;
 Real omega;
-
+bool flag = false;
 Grid *fluid, *tmpfluid;
 double uw[2] = {0.08, 0.0};
 double disvel[Q][2] = { { 0.0, 0.0 }, { 1.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 1.0 }, { -1.0, 1.0 }, { -1.0, 0.0 }, { -1.0, -1.0 }, { 0.0, -1.0 }, { 1.0, -1.0 } };
 int neighbours[Q][2] = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 },  { 0, -1 }, { 1, -1 } };
-//double stencil[Q] = { 4.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0 };
-double stencil[Q] = { 0.4444444, 0.1111111, 0.0277777, 0.1111111, 0.0277777, 0.1111111, 0.0277777, 0.1111111, 0.0277777 };
-//double stencil[Q] = { 0.44, 0.11, 0.028, 0.11, 0.028, 0.11, 0.028, 0.11, 0.028 };
+double stencil[Q] = { 4.0 / 9.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0, 1.0 / 9.0, 1.0 / 36.0 };
+string imfile;
 
 inline void init()
 {
-cout << "@@@@################";
+	ifstream infile;
+	size_t * arr;
+	if(flag)
+	{
+	 infile.open(imfile);
+	 stringstream ss;
+	 string inputLine = "";
+        
+        // Check if pgm-version is P2 (graymap)
+        getline(infile,inputLine);
+        if(inputLine.compare("P2") != 0) cerr << "Error: PGM-File is not a graymap" << endl;
+
+        // Ignore second line (comment) in pgm-file
+        getline(infile,inputLine);
+
+        // Continue with a stringstream
+        ss << infile.rdbuf();
+        // Get size of domain
+        ss >> sizex >> sizey;
+        cout << sizex << " columns and " << sizey << " rows" << endl;
+        
+        // allocate array to store pixel data
+        arr = new size_t[sizex * sizey];
+        size_t value;
+        ss >> value;
+        
+        // Iterate through pixel data
+        for(size_t it_col = 0; it_col < sizey; ++it_col)
+        {
+                for (size_t it_row = 0; it_row < sizex ; ++it_row)
+                {
+                        ss >> arr[it_col * sizex + it_row];
+                        //cout << arr[it_col * sizex +  it_row] << " ";
+                }
+                //cout << endl;
+        }     
+        // close file
+        infile.close();
+	}
 	double ux = 0.0, uy = 0.0, initrho =1.0;
-	fluid = new Grid(sizex+2, sizey+2, stencil, ux, uy, initrho);
-	tmpfluid = new Grid(sizex+2, sizey+2, stencil, ux, uy, initrho);
-	/*for (int i = 0; i < Q; i++)
-	feq[i] = stencil[i];*/
-cout << "@@@@@@@@@@@@@@@@@@@@@@";
+	fluid = new Grid(sizex+2, sizey+2, stencil, ux, uy, initrho, arr , flag);
+	tmpfluid = new Grid(sizex+2, sizey+2, stencil, ux, uy, initrho, arr , flag);
+
 }
 
 inline double calLidVel(size_t k)
@@ -48,7 +83,9 @@ inline void stream()
 	{
 		for (int j = 1; j <= (int)sizex; j++)
 		{
-			for (int k = 1; k < Q; k++)
+        if(flag && (*tmpfluid).getBoundary(i, j) == 0)
+		{	
+		for (int k = 1; k < Q; k++)
 			{
                 int pt = (*tmpfluid).getBoundary(i + neighbours[k][1], j + neighbours[k][0]);
 				size_t l;
@@ -56,16 +93,18 @@ inline void stream()
                 else l=8;
 
                 if (pt > 0 && pt != 3 )
-					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls					
+			(*tmpfluid)(i, j, l) = (*fluid)(i, j, k);       // Bounce back from vertical and bottom walls					
                 else if (pt == 3)
-					(*tmpfluid)(i, j, l) = (*fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
-				else
+			(*tmpfluid)(i, j, l) = (*fluid)(i, j, k) - calLidVel(k); // Streaming effect due to lid velocity in upper wall
+		else
                     (*tmpfluid)(i + neighbours[k][1], j + neighbours[k][0], k) = (*fluid)(i,j,k);  // Free Streaming
 				
 			}
 
 			(*tmpfluid)(i, j, 0) = (*fluid)(i, j, 0);
 		}
+	}
+	
 	}
 }
 
@@ -81,6 +120,8 @@ inline void calLatticeRhoVelocity()
 			rh = 0.0;
 			vx = 0.0;
 			vy = 0.0;
+         if(flag && (*tmpfluid).getBoundary(i,j) == 0)
+            {
 			for (int k = 0; k < Q; k++)
 			{
 				rh += (*tmpfluid)(i, j, k);
@@ -88,10 +129,10 @@ inline void calLatticeRhoVelocity()
 				vy += (*tmpfluid)(i, j, k) * disvel[k][1];
 			}
 
-			(*tmpfluid)(i, j, 9) = vx / rh;
-			(*tmpfluid)(i, j, 10) = vy / rh;
+            (*tmpfluid)(i, j, 9) = vx ;
+            (*tmpfluid)(i, j, 10) = vy;
 			(*tmpfluid)(i, j, 11) = rh;
-
+         }
 		}
 	}
 
@@ -110,15 +151,19 @@ inline void collide()
 	{
 		for (size_t j = 1; j <= sizex; j++)
 		{
+	 if(flag && (*tmpfluid).getBoundary(i,j) == 0)
+     {
             for (int k = 0; k < Q; k++)
 			{
 			(*tmpfluid)(i, j, k) = (1.0 - omega) * (*tmpfluid)(i, j, k) + omega * feq(k, (*tmpfluid)(i, j, 9), (*tmpfluid)(i, j, 10), (*tmpfluid)(i, j, 11));
 			}
+     }
 		}
 
 	}
 
 }
+
 
 int main(int argc, char** argv)
 {
@@ -130,21 +175,20 @@ int main(int argc, char** argv)
 	}
 
 	string fname = argv[1];
-	ifstream paramfile;
-	string tmp;
-	string vtkfilename;
+    string vtkfilename;
 	size_t vtk_step;
 	
 	FileReader* fr = new FileReader();
 
 	fr->readParameters( fname);
-
+ 	
 	sizex = fr->getParameter<size_t>("sizex");
 	sizey = fr->getParameter<size_t>("sizey");
 	timesteps = fr->getParameter<size_t>("timesteps");
 	omega = fr->getParameter<Real>("omega");
 	vtkfilename = fr->getParameter<string>("vtk_file");
 	vtk_step = fr->getParameter<size_t>("vtk_step");
+	imfile = fr->getParameter<string>("geometry");
 
 	std::cout << "sizex = " << sizex << '\n';
 	std::cout << "sizey = " << sizey << '\n';
@@ -152,61 +196,25 @@ int main(int argc, char** argv)
 	std::cout << "omega = " << omega << '\n';
 	std::cout << "vtk_file = " << vtkfilename << '\n';
 	std::cout << "vtk_step = " << vtk_step << '\n';
-
+	if(sizex == 9999999999 && imfile != "9999999999")
+	flag = true;
 	vtkfilename = vtkfilename.substr(0, vtkfilename.find('.'));
 	std::cout << "vtk_file = " << vtkfilename << '\n';
-
-	//cout << "$$$$$$$$$$";
+    cout << flag << " ";
 	init();
-	//int k = 0;
-	
-    for (size_t i = 0; i < timesteps; i++)
-	{
-	
-		/*stream();
-//cout << " 8 ";
-		calLatticeRhoVelocity();
-//cout << " 9 ";
-		collide();
-		(*fluid).copy(tmpfluid);*/
-		//if (i % 5 == 0)
-        /*{
-			cout << '\n';
-			for (size_t i = 1; i <= sizey; i++)
-			{
-				for (size_t j = 1; j <= sizex; j++)
-				{
-					cout << i << " " << j << " ";
-					for (int k = 0; k < 13; k++)
-					{
-						cout << (*fluid)(i, j, k) << " ";
-					}
-					cout << '\n';
-				}
-			}
-		}
-		{
-                        cout << '\n';
-                        for (size_t i = 1; i <= sizey; i++)
-                        {
-                                for (size_t j = 1; j <= sizex; j++)
-                                {
-                                        cout << i << " " << j << " ";
-                                        for (int k = 0; k < 13; k++)
-                                        {
-                                                cout << (*tmpfluid)(i, j, k) << " ";
-                                        }
-                                        cout << '\n';
-                                }
-                        }
-                }*/
 
- stream();
-//cout << " 8 ";
-                calLatticeRhoVelocity();
-//cout << " 9 ";
-                collide();
-                (*fluid).copy(tmpfluid);
+    timeval start, end;
+
+    gettimeofday(&start, 0);
+
+
+
+    for (size_t i = 0; i < timesteps; i++)
+    {
+        stream();
+        calLatticeRhoVelocity();
+        collide();
+        (*fluid).copy(tmpfluid);
          if (i==1 || i%vtk_step == 0)
                 {
                         string vtkfile = std::string("./output/" + vtkfilename) + std::string(to_string(i)) + std::string(".vtk");
@@ -214,6 +222,11 @@ int main(int argc, char** argv)
                        
                 }
 	}
+    gettimeofday(&end, 0);
+    double elapsed = 0.000001 * ((double)((end.tv_sec - start.tv_sec) * 1000000 + end.tv_usec - start.tv_usec));
+    int nofluidcel = fluid->getFluidCellNumb();
+    double mlu = (nofluidcel * timesteps) /elapsed ;
+    std::cout << "\n MLUps Value = " << mlu << '\n';
 	fluid->~Grid();
 	tmpfluid->~Grid();
 }
